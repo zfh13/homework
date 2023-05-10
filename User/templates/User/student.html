@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生提交作业</title>
+</head>
+<body>
+<h2>作业列表</h2>
+{% for task in task_list %}
+     <p>作业标题:{{ task.title }}</p>
+     <p>作业内容:{{ task.content }}</p>
+     <p>作业截止时间:{{ task.deadLine }}</p>
+{% endfor %}
+<a href="{% url 'User:upload' %}">上传作业</a>
+</body>
+</html>

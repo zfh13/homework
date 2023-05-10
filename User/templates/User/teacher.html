@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>老师发布作业</title>
+</head>
+<body>
+<form action="" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="作业标题">
+        <input type="text" name="content" placeholder="作业内容">
+        <input type="date" name="deadLine" placeholder="截止日期">
+        <button type="submit">发布作业</button>
+    </form>
+</body>
+</html>
