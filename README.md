@@ -12,4 +12,5 @@
 
 `python manage.py migrate`
 然后启动访问就行了。
+
 对了，致我可爱(baipiao)的队友们，记得给我右上角star点赞
