@@ -5,6 +5,22 @@
     <title>上传作业</title>
 </head>
 <body>
-<h1>上传作业</h1>
+
+ <h2>{{ task.title }}</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+ <label>姓名</label>
+      <input type="username" name="name" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label>学号</label>
+      <input type="text" name="studentNumber" class="form-control" required>
+    </div>
+  <label>作业文件：</label>
+  {{ form.file }}
+  <br>
+  <button type="submit">提交</button>
+</form>
+
 </body>
 </html>

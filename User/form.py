@@ -1,5 +1,7 @@
+from time import timezone
+
 from django import forms
-from .models import User
+from .models import User, Task, Submission
 
 
 class RegistrationForm(forms.ModelForm):
@@ -14,3 +16,34 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'password', 'role']
+
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'content', 'deadLine']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        end_time = cleaned_data.get('deadLine')
+        if end_time and end_time < timezone.now():
+            raise forms.ValidationError('Submission deadline has passed.')
+
+class DocumentForm(forms.Form):
+    name = forms.CharField(max_length=50)
+    student_id = forms.CharField(max_length=20)
+    document = forms.FileField()
+
+
+class SubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['task', 'file']
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        if file:
+            return file
+        else:
+            raise forms.ValidationError('请选择一个文件！')
+

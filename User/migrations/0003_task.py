@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Task',
             fields=[
-                ('title', models.CharField(max_length=30, primary_key=True, serialize=False)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=30)),
                 ('content', models.TextField()),
                 ('deadLine', models.DateTimeField(default=datetime.datetime(2023, 5, 20, 15, 35, 34, 508327))),
             ],

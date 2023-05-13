@@ -1,14 +1,22 @@
 import datetime
 
 import django
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.core.checks import messages
+
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.generic import ListView, DetailView, FormView
 
-from .models import User, Task
+from .form import DocumentForm, SubmissionForm
+from .models import User, Task, Submission, Student
 
 
 # 注册视图函数
@@ -32,7 +40,7 @@ def login(request):
         if role == 'teacher':
             return redirect('User:teacher')
         if role == 'student':
-            return redirect('User:student')
+            return HttpResponseRedirect("/student/")
     return render(request, 'User/login.html', {})
 
 def createTask(request):
@@ -47,13 +55,6 @@ def createTask(request):
         task.save()
     return render(request, 'User/teacher.html')
 
-def upload(request):
-
-    return render(request, 'User/upload.html')
-
-def past_homework(task):
-    return task.deadLine <= datetime.datetime.now()
-
 class TaskListView(ListView):
     model = Task
     context_object_name = 'task_list'
@@ -61,3 +62,32 @@ class TaskListView(ListView):
 
 
 
+class SubmissionView(FormView):
+    form_class = SubmissionForm
+    template_name = 'User/upload.html'
+    success_url = reverse_lazy('task_list')
+
+
+    def form_valid(self, form):
+        # 保存提交信息
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, pk=task_id)
+        name = self.request.POST.get("name")
+        studentNumber = self.request.POST.get("studentNumber")
+        student = Student(name=name,studentNumber=studentNumber)
+        file = form.cleaned_data['file']
+        submission = Submission(task=task, student=student, file=file)
+        submission.save()
+
+        # 判断是否逾期
+        if datetime.timezone.now() > task.deadLine:
+            submission.is_late = True
+            submission.save()
+            messages.warning(self.request, '任务已经逾期')
+        else:
+            messages.success(self.request, '任务提交成功')
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        return kwargs
