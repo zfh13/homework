@@ -47,3 +47,7 @@ class SubmissionForm(forms.ModelForm):
         else:
             raise forms.ValidationError('请选择一个文件！')
 
+
+class UserFormLogin(forms.Form):
+    username = forms.CharField(label='用户名', max_length=100)
+    password = forms.CharField(label='密码', widget=forms.PasswordInput())

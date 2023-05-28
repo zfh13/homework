@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include, re_path
 from . import views
-from .views import TaskListView, SubmissionView
+from .views import TaskListView
 
 app_name = 'User'
 urlpatterns = [
@@ -10,5 +10,5 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('teacher/', views.createTask, name="teacher"),
     path('student/', TaskListView.as_view(), name='task_list'),
-    path('student/<int:task_id>/', SubmissionView.as_view(), name='submit_task'),
+    path('student/<int:task_id>/', views.submitAssignment, name='submit_task'),
 ]
